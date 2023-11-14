@@ -1,5 +1,6 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { addToCart, removeFromCart, clearCart, fetchProducts } from "../actions/products.action";
+import { add } from "../../utils/functions";
 
 const initialState = {
     products: [],
@@ -20,21 +21,10 @@ const productsReducer = createReducer(initialState, (builder) => {
                 cart: [...state.cart]
             }
 
-            const index = newState.cart.findIndex(item => action.payload.product === item.product)
+            const newCart = add(newState.cart, action.payload, 'product')
 
-            if (index !== -1) {
-                newState.cart[index] = {
-                    product: action.payload.product,
-                    quantity: action.payload.quantity + newState.cart[index].quantity
-                }
-                // const producto = state.cart.find(item => action.payload.product === item.product)
-                // producto.quantity += action.payload.quantity
+            newState.cart = newCart
 
-            } else {
-                newState.cart = [...state.cart, action.payload]
-                // state.cart.push(action.payload)
-            }
-            // console.log(newState);
             return newState
 
         })

@@ -2,20 +2,28 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Product from '../components/Product';
 import { addToCart, fetchProducts } from '../redux/actions/products.action';
+import useLocalStorage from '../utils/useLocalStorage';
+import useCart from '../utils/useCart';
 
 function ProductList() {
   // const [products, setProducts] = useState([]);
   const dispatch = useDispatch()
-  const products = useSelector(state => state.productsReducer.products)
-  
+  const { products } = useSelector(state => state.productsReducer)
+  const [storage, LS] = useLocalStorage()
+  const [cart, cartFn] = useCart()
   useEffect(() => {
 
     dispatch(fetchProducts())
 
   }, []);
 
-  function add(product, quantity) {
-    dispatch(addToCart({product:product._id, quantity}))
+  async function add(product, quantity) {
+    try {
+      cartFn.add({ product: product._id, quantity })
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
 
